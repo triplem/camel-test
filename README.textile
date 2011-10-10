@@ -1,6 +1,8 @@
 h1. CAMEL-Test
 
-A small project to test the Apache Camel project and some other useful stuff.
+A small project to test the Apache Camel project and other EAI stuff. Basically this project follows the
+"ReportIncident-Tutorial":http://camel.apache.org/tutorial-example-reportincident.html. We are using JAX-RS instead
+of JAX-WS, and also try to gather some more information about related technologies like the Maven Build Structure.
 
 h2. Build Structure
 
