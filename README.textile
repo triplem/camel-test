@@ -1,0 +1,22 @@
+h1. CAMEL-Test
+
+A small project to test the Apache Camel project and some other useful stuff.
+
+h2. Build Structure
+
+h3. Skip Integration Tests
+
+We decided to separate the Integration Tests from the normal Tests. "Normal" Unit-Tests and Integration Tests are stored
+in the same directory structure. Unit-Tests are using the naming structure "**/*Test.java" the Integration Tests are
+using the naming structure "**/*IT.java". The failsafe-Plugin is used for the Integration Tests (excluding **/*Test.java,
+while the surefire plugin excludes the **/*IT.java files. This means, that tests can be separated using the following
+parameters:
+
+* @-DskipITs@ - skip Integration Tests only
+* @-DskipTests@ - skip "normal" Tests only
+* @-Dmaven.test.skip=true@ - skip all Tests
+
+Reports for the unit-tests can be found in the usual target/surefire-reports-Directory, the reports for the integration-tests
+can be found in the directory target/failsafe-reports-Directory, like documented in the
+"Failsafe Plugin Documentation":http://maven.apache.org/plugins/maven-failsafe-plugin/.
+
