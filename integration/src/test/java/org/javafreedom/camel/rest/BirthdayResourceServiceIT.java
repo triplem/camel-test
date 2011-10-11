@@ -2,8 +2,11 @@ package org.javafreedom.camel.rest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.xml.ws.Response;
+
+import java.io.File;
 
 import org.javafreedom.camel.model.Birthday;
 import org.junit.Ignore;
@@ -31,6 +34,12 @@ public class BirthdayResourceServiceIT {
 
 		assertNotNull(bday);
 		assertEquals("4711", bday.getId());
+
+		File logFile = new File("target", "bday-4711.txt");
+		assertTrue(logFile.exists());
+
+		File htmlFile = new File("target", "bday-4711.html");
+		assertTrue(htmlFile.exists());
 	}
 
 }

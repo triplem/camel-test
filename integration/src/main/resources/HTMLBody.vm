@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>TEST</title>
+    </head>
+    <body>
+        <h1>$body.id</h1>
+        <p>
+            Birthday $body.id is from $body.name and is on the $body.date
+        </p>
+        <p>
+            This is a dirty template
+        </p>
+    </body>
+</html>

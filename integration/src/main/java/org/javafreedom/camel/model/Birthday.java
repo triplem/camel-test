@@ -37,4 +37,8 @@ public class Birthday {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
+	public String toString() {
+		return "id: " + id + " # name: " + name;
+	}
 }

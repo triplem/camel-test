@@ -7,9 +7,13 @@
         </encoder>
     </appender>
 
+<!--
     <logger name="org.springframework" level="DEBUG"/>
+-->
 
-    <root level="debug">
+    <logger name="org.javafreedom.camel" level="DEBUG"/>
+
+    <root level="warn">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
