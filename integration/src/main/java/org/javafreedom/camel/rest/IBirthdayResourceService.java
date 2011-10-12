@@ -4,6 +4,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.javafreedom.camel.model.Birthday;
 
@@ -15,6 +16,6 @@ public interface IBirthdayResourceService {
 
 	@GET
 	@Path("{id}")
-	public Birthday getBirthday(@PathParam("id") String id);
+	public Response getBirthday(@PathParam("id") String id);
 
 }

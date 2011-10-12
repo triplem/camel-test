@@ -19,6 +19,7 @@
         <jaxrs:headers>
             <entry key="Accept" value="application/json"/>
         </jaxrs:headers>
+
     </jaxrs:client>
 
 </beans>
