@@ -23,31 +23,11 @@ public class BirthdayResourceService implements IBirthdayResourceService {
 	private IBirthdayService birthdayService;
 
 	private CamelContext camel;
-	private ProducerTemplate template;
 
 	public BirthdayResourceService() throws Exception {
-		init(true);
-	}
-
-	/**
-	 * This consturctor is mainly to improve testing of the Class with and/or without consumer.
-	 *
-	 * @param enableConsumer
-	 * @throws Exception
-	 */
-	public BirthdayResourceService(boolean enableConsumer) throws Exception {
-		init(enableConsumer);
-	}
-
-	private void init(boolean enableConsumer) throws Exception {
 		camel = new DefaultCamelContext();
-		// using template, and not defining any special components, see http://camel.apache.org/tutorial-example-reportincident-part2.html
-		// (Reducing Code Lines)
-		template = camel.createProducerTemplate();
 
-		if (enableConsumer) {
-			addMailSendConsumer();
-		}
+		camel.addRoutes(new BirthdayResourceRoute());
 
 		camel.start();
 	}
@@ -55,61 +35,10 @@ public class BirthdayResourceService implements IBirthdayResourceService {
 	public Response getBirthday(String id) {
 		Birthday bday = this.birthdayService.findById(id);
 
-		sendToCamelLog(bday.toString());
-		sendToCamelFile(bday.getId(), bday.toString());
-
-		generateBodyAndStoreAsFile(bday);
+		Object mailBody = camel.createProducerTemplate().sendBody("direct:start", ExchangePattern.InOptionalOut, bday);
 
 		return Response.ok(bday).build();
 	}
-
-	private void addMailSendConsumer() throws Exception {
-		log.info("addMailSendConsumer");
-  		// Grab the endpoint where we should consume. Option - the first poll starts after 2 seconds
-        Endpoint endpoint = camel.getEndpoint("file://target/mail?consumer.initialDelay=2000");
-
-        // create the event driven consumer
-        // the Processor is the code what should happen when there is an event
-        // (think it as the onMessage method)
-        Consumer consumer = endpoint.createConsumer(new Processor() {
-            public void process(Exchange exchange) throws Exception {
-                // get the mail body as a String
-                String mailBody = exchange.getIn().getBody(String.class);
-
-                // okay now we are read to send it as an email
-                log.info("Sending email...");
-				sendEmail(mailBody);
-				log.info("Email sent");
-            }
-        });
-
-        // star the consumer, it will listen for files
-        consumer.start();
-	}
-
-	private void sendToCamelLog(String name) {
-		log.info("sendToCamelLog");
-		template.sendBody("log:org.javafreedom.camel", name);
-	}
-
-	private void generateBodyAndStoreAsFile(Birthday birthday) {
-		log.info("generateBodyAndStoreAsFile");
-		Object response = template.sendBody("velocity:HTMLBody.vm", ExchangePattern.InOptionalOut, birthday);
-		String fileName = "bday-" + birthday.getId() + ".html";
-		template.sendBodyAndHeader("file://target/mail", response, Exchange.FILE_NAME, fileName);
-	}
-
-	private void sendToCamelFile(String birthdayId, String name) {
-		log.info("sendToCamelFile");
-		String fileName = "bday-" + birthdayId + ".txt";
-		template.sendBodyAndHeader("file://target", name, Exchange.FILE_NAME, fileName);
-	}
-
-    private void sendEmail(String body) {
-        // send the email to your mail server
-        String url = "smtp://someone@localhost?password=secret&to=birthday@mycompany.com";
-        template.sendBodyAndHeader(url, body, "subject", "Birthday retrieved");
-    }
 
 	// for testing purposes
 	public IBirthdayService getBirthdayService() {

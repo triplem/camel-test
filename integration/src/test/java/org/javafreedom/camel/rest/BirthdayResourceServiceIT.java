@@ -30,6 +30,7 @@ public class BirthdayResourceServiceIT {
 	private IBirthdayResourceService proxy;
 
 	@Test
+	@Ignore
 	public void testGetBirthday() throws Exception {
 		Mailbox box = Mailbox.get("birthday@mycompany.com");
 		assertEquals(0, box.size());

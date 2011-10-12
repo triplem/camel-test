@@ -6,7 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.util.Date;
 
+import org.apache.camel.ContextTestSupport;
+import org.apache.camel.ExchangePattern;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.jaxrs.client.ResponseReader;
 import org.javafreedom.camel.model.Birthday;
 import org.javafreedom.camel.service.BirthdayService;
@@ -22,25 +26,25 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:META-INF/spring/TEST-applicationContext-integration.xml" })
-public class BirthdayResourceServiceTest {
+public class BirthdayResourceServiceTest extends ContextTestSupport {
 
-	@Autowired
-	private IBirthdayService birthdayService;
+	@Override
+	protected RouteBuilder createRouteBuilder() throws Exception {
+		return new BirthdayResourceRoute();
+	}
 
 	@Test
 	public void testGetBirthday() throws Exception {
-		ResponseReader reader = new ResponseReader();
-		reader.setEntityClass(Birthday.class);
+		Birthday bday = new Birthday();
+		bday.setDate(new Date());
+		bday.setId("4711");
+		bday.setName("TEST4711");
 
-		BirthdayResourceService resourceService = new BirthdayResourceService(false);
+		Object out = context.createProducerTemplate().sendBody("direct:start", ExchangePattern.InOptionalOut, bday);
+		assertNotNull(out);
 
-		resourceService.setBirthdayService(birthdayService);
+		String body = context.getTypeConverter().convertTo(String.class, out);
 
-		Response resource = resourceService.getBirthday("4711");
-		Birthday birthday = birthdayService.findById("4711");
-
-		assertEquals(resource.getEntity().toString(), birthday.toString());
+		assertTrue(body.startsWith("<html>") && body.contains("4711"));
 	}
 }
