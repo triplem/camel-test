@@ -1,40 +1,33 @@
 package org.javafreedom.camel.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.util.Date;
 
-import org.apache.camel.ContextTestSupport;
+import org.apache.camel.CamelContext;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.cxf.jaxrs.client.ResponseReader;
 import org.javafreedom.camel.model.Birthday;
-import org.javafreedom.camel.service.BirthdayService;
-import org.javafreedom.camel.service.IBirthdayService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.jvnet.mock_javamail.Mailbox;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  */
-public class BirthdayResourceServiceTest extends ContextTestSupport {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:META-INF/spring/TEST-applicationContext-integration.xml" })
+public class BirthdayResourceServiceTest {
 
+	@Autowired
+	private CamelContext camel;
 
-	@Override
-	protected RouteBuilder createRouteBuilder() throws Exception {
-		return new BirthdayResourceRoute();
-	}
-
+	@DirtiesContext
 	@Test
 	public void testGetBirthday() throws Exception {
 		Mailbox box = Mailbox.get("birthday@mycompany.com");
@@ -45,15 +38,17 @@ public class BirthdayResourceServiceTest extends ContextTestSupport {
 		bday.setId("4711");
 		bday.setName("TEST4711");
 
-		assertNotNull(context);
+		assertNotNull(camel);
 
-		ProducerTemplate template = context.createProducerTemplate();
+		assertNotNull(camel.getRegistry().lookup("birthdayService"));
 
-		Object out = template.sendBody("direct:start", ExchangePattern.InOut, bday);
+		ProducerTemplate template = camel.createProducerTemplate();
+
+		Object out = template.sendBody("direct:start", ExchangePattern.InOut, "4711");
 
 		assertNotNull(out);
 
-		String body = context.getTypeConverter().convertTo(String.class, out);
+		String body = camel.getTypeConverter().convertTo(String.class, out);
 
 		assertTrue(body.startsWith("<html>"));
 		assertTrue(body.contains("4711"));

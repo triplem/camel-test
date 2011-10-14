@@ -2,11 +2,8 @@ package org.javafreedom.camel.rest;
 
 import javax.ws.rs.core.Response;
 
-import org.apache.camel.*;
-import org.apache.camel.component.file.FileComponent;
-import org.apache.camel.component.log.LogComponent;
-import org.apache.camel.impl.DefaultCamelContext;
-
+import org.apache.camel.CamelContext;
+import org.apache.camel.ExchangePattern;
 import org.javafreedom.camel.model.Birthday;
 import org.javafreedom.camel.service.IBirthdayService;
 import org.slf4j.Logger;
@@ -22,14 +19,10 @@ public class BirthdayResourceService implements IBirthdayResourceService {
 	@Autowired
 	private IBirthdayService birthdayService;
 
+	@Autowired
 	private CamelContext camel;
 
 	public BirthdayResourceService() throws Exception {
-		camel = new DefaultCamelContext();
-
-		camel.addRoutes(new BirthdayResourceRoute());
-
-		camel.start();
 	}
 
 	public Response getBirthday(String id) {
