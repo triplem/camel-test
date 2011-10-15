@@ -48,15 +48,10 @@ public class BirthdayResourceServiceTest {
 
 		assertNotNull(out);
 
-		String body = camel.getTypeConverter().convertTo(String.class, out);
+		// Original route
+		assertTrue(out instanceof Birthday);
 
-		assertTrue(body.startsWith("<html>"));
-		assertTrue(body.contains("4711"));
-
-		File file = new File("target/mail", "birthday-4711.html");
-
-		assertTrue(file.exists());
-
+		// wiretap route, creates file and sends email
 		Thread.sleep(10 * 1000);
 
 		assertEquals(1, box.size());

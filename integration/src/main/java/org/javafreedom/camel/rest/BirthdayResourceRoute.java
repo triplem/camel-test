@@ -3,6 +3,7 @@ package org.javafreedom.camel.rest;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.file.FileComponent;
 import org.apache.camel.language.bean.BeanLanguage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,18 @@ public class BirthdayResourceRoute extends RouteBuilder {
 
 		from("direct:start")
 				.beanRef("birthdayService", "findById")
+				.wireTap("direct:tap")
+				.to("log:org.javafreedom.camel");
+
+		from("direct:tap")
+				.to("log:org.javafreedom.camel")
 				.setHeader(Exchange.FILE_NAME, BeanLanguage.bean(FilenameGenerator.class, "generateFilename"))
 				.to("velocity:HTMLBody.vm")
 				.to("file://target/mail");
 
-		from("file://target/mail")
+		from("file:target/mail")
 				.setHeader("subject", constant("Birthday retrieved"))
+				.to("log:org.javafreedom.camel")
 				.to("smtp://someone@localhost?password=secret&to=birthday@mycompany.com");
 	}
 }

@@ -15,6 +15,10 @@ public class FilenameGenerator {
 	public String generateFilename(Birthday birthday) {
 		log.info("generateFilename");
 
-		return "birthday-" + birthday.getId() + ".html";
+		String fileName = "birthday-" + birthday.getId() + ".html";
+
+		log.debug("Filename: " + fileName);
+
+		return fileName;
 	}
 }
