@@ -93,6 +93,18 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- execute camel server -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>exec-maven-plugin</artifactId>
+                 <configuration>
+                     <mainClass>org.apache.camel.spring.Main</mainClass>
+                     <includePluginDependencies>false</includePluginDependencies>
+                     <commandlineArgs>-ac META-INF/spring/applicationContext-integration.xml</commandlineArgs>
+                 </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -130,6 +142,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
 
         <!-- Camel EAI stuff -->
         <dependency>
@@ -152,6 +169,21 @@
             <artifactId>camel-mail</artifactId>
             <version>${camel.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jetty</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cxf</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>${wsdl4j.version}</version>
+        </dependency>
 
         <!-- testing -->
         <dependency>
@@ -173,12 +205,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-            <version>${wsdl4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jvnet.mock-javamail</groupId>
             <artifactId>mock-javamail</artifactId>
             <version>1.9</version>
@@ -191,4 +217,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>

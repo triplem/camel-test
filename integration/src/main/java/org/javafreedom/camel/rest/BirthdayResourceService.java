@@ -26,11 +26,12 @@ public class BirthdayResourceService implements IBirthdayResourceService {
 	}
 
 	public Response getBirthday(String id) {
-		Birthday bday = this.birthdayService.findById(id);
-
-		Object mailBody = camel.createProducerTemplate().sendBody("direct:start", ExchangePattern.InOptionalOut, bday);
-
-		return Response.ok(bday).build();
+//		Birthday bday = this.birthdayService.findById(id);
+//
+//		Object mailBody = camel.createProducerTemplate().sendBody("direct:start", ExchangePattern.InOptionalOut, bday);
+//
+//		return Response.ok(bday).build();
+		return null;
 	}
 
 	// for testing purposes

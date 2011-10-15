@@ -23,6 +23,12 @@ public class BirthdayResourceRoute extends RouteBuilder {
 		log.info("Name: " + context.getName());
 		log.info("BirthdayService: " + context.getRegistry().lookup("birthdayService"));
 
+
+		from("cxfrs://bean://rsServer")
+				.beanRef("birthdayService", "findById")
+				.wireTap("direct:tap")
+				.to("log:org.javafreedom.camel");
+
 		from("direct:start")
 				.beanRef("birthdayService", "findById")
 				.wireTap("direct:tap")
@@ -36,7 +42,7 @@ public class BirthdayResourceRoute extends RouteBuilder {
 
 		from("file:target/mail")
 				.setHeader("subject", constant("Birthday retrieved"))
-				.to("log:org.javafreedom.camel")
-				.to("smtp://someone@localhost?password=secret&to=birthday@mycompany.com");
+				.to("log:org.javafreedom.camel");
+//				.to("smtp://someone@localhost?password=secret&to=birthday@mycompany.com");
 	}
 }
